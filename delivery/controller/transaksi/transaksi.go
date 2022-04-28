@@ -80,9 +80,9 @@ func (tc *TransaksiController) InsertTransaksi(c echo.Context) error {
 	})
 }
 
-func (tc *TransaksiController) GetAllTransaksi(c echo.Context) error {
+func (tc *TransaksiController) RiwayatAllTrans(c echo.Context) error {
 
-	res, err := tc.Repo.GetAll()
+	res, err := tc.Repo.RiwayatAllTrans()
 
 	if err != nil {
 		log.Warn("masalah pada server")
@@ -90,18 +90,17 @@ func (tc *TransaksiController) GetAllTransaksi(c echo.Context) error {
 	}
 	log.Info("berhasil get all data")
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"code":    http.StatusOK,
-		"count":   len(res),
-		"message": "berhasil get all data",
-		"status":  true,
-		"data":    res,
+		"code":                 http.StatusOK,
+		"count data transaksi": len(res),
+		"message":              "berhasil get all data",
+		"status":               true,
+		"data":                 res,
 	})
 }
-
-func (pc *TransaksiController) GetTransaksi(c echo.Context) error {
+func (tc *TransaksiController) HistoriTrans(c echo.Context) error {
 	tipe := c.Param("tipe")
 
-	hasil, err := pc.Repo.GetTrans(tipe)
+	hasil, err := tc.Repo.HistoriTrans(tipe)
 
 	if err != nil {
 		log.Warn(err)
@@ -113,13 +112,57 @@ func (pc *TransaksiController) GetTransaksi(c echo.Context) error {
 
 	}
 
-	log.Info("data pembelian found")
+	log.Info("data found")
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"code":    http.StatusOK,
-		"count":   len(hasil),
-		"message": "riwayat transaksi ditemukan",
-		"status":  true,
-		"data":    hasil,
+		"code":                 http.StatusOK,
+		"count data transaksi": len(hasil),
+		"message":              "riwayat transaksi ditemukan",
+		"status":               true,
+		"data":                 hasil,
+	})
+
+}
+
+func (tc *TransaksiController) GetAllTransaksi(c echo.Context) error {
+
+	res, err := tc.Repo.GetAll()
+
+	if err != nil {
+		log.Warn("masalah pada server")
+		return c.JSON(http.StatusInternalServerError, "fail")
+	}
+	log.Info("berhasil get all data")
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":                 http.StatusOK,
+		"count data transaksi": len(res),
+		"message":              "berhasil get all data",
+		"status":               true,
+		"data":                 res,
+	})
+}
+
+func (tc *TransaksiController) GetTransaksi(c echo.Context) error {
+	tipe := c.Param("tipe")
+
+	hasil, err := tc.Repo.GetTrans(tipe)
+
+	if err != nil {
+		log.Warn(err)
+		notFound := "data tidak ditemukan"
+		if err.Error() == notFound {
+			return c.JSON(http.StatusNotFound, "fail")
+		}
+		return c.JSON(http.StatusInternalServerError, "fail")
+
+	}
+
+	log.Info("data found")
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":                 http.StatusOK,
+		"count data transaksi": len(hasil),
+		"message":              "riwayat transaksi ditemukan",
+		"status":               true,
+		"data":                 hasil,
 	})
 
 }

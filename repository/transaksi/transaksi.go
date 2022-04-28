@@ -46,6 +46,40 @@ func (tr *TransaksiRepo) GetAll() ([]entities.Transaksi, error) {
 	return arrTransaksi, nil
 }
 
+func (tr *TransaksiRepo) HistoriTrans(jenis_transaksi string) ([]entities.Transaksi, error) {
+	arrTransaksi := []entities.Transaksi{}
+
+	if err := tr.Db.Where("jenis_transaksi = ? AND created_at BETWEEN CURDATE()-7 AND CURDATE()", jenis_transaksi).Find(&arrTransaksi).Error; err != nil {
+		log.Warn(err)
+		return nil, errors.New("tidak bisa select data")
+	}
+
+	if len(arrTransaksi) == 0 {
+		log.Warn("tidak ada data")
+		return nil, errors.New("tidak ada data")
+	}
+
+	log.Info()
+	return arrTransaksi, nil
+}
+
+func (tr *TransaksiRepo) RiwayatAllTrans() ([]entities.Transaksi, error) {
+	arrTransaksi := []entities.Transaksi{}
+
+	if err := tr.Db.Where("created_at BETWEEN CURDATE()-7 AND CURDATE()").Find(&arrTransaksi).Error; err != nil {
+		log.Warn(err)
+		return nil, errors.New("tidak bisa select data")
+	}
+
+	if len(arrTransaksi) == 0 {
+		log.Warn("tidak ada data")
+		return nil, errors.New("tidak ada data")
+	}
+
+	log.Info()
+	return arrTransaksi, nil
+}
+
 func (tr *TransaksiRepo) GetTrans(jenis_transaksi string) ([]entities.Transaksi, error) {
 	arrTransaksi := []entities.Transaksi{}
 
@@ -62,18 +96,3 @@ func (tr *TransaksiRepo) GetTrans(jenis_transaksi string) ([]entities.Transaksi,
 	return arrTransaksi, nil
 
 }
-
-// func (br *BookRepo) DeleteBookbyID(ID int) (entities.Book, error) {
-// 	var books []entities.Book
-// 	res, err := br.GetBookID(ID)
-// 	if err != nil {
-// 		return entities.Book{}, err
-// 	}
-
-// 	if err := br.Db.Delete(&books, "id = ?", ID).Error; err != nil {
-// 		log.Warn(err)
-// 		return entities.Book{}, errors.New("tidak bisa delete data")
-// 	}
-// 	log.Info()
-// 	return res, nil
-// }

@@ -24,5 +24,7 @@ func RegisterPath(e *echo.Echo, pc cproduk.ControllerProduk, uc cuser.Controller
 
 	e.GET("/transaksi", tc.GetAllTransaksi, middleware.JWTWithConfig(middleware.JWTConfig{SigningKey: []byte("A$T0T!")}))
 	e.GET("/transaksi/:tipe", tc.GetTransaksi, middleware.JWTWithConfig(middleware.JWTConfig{SigningKey: []byte("A$T0T!")}))
+	e.GET("/transaksi/recently7days", tc.RiwayatAllTrans, middleware.JWTWithConfig(middleware.JWTConfig{SigningKey: []byte("A$T0T!")}))
+	e.GET("/transaksi/:tipe/last-7-days", tc.HistoriTrans, middleware.JWTWithConfig(middleware.JWTConfig{SigningKey: []byte("A$T0T!")}))
 
 }
